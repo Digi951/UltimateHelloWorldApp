@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <None Remove="BusinessLogic\" />
+    <None Remove="appsettings.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BusinessLogic\" />
@@ -36,5 +37,10 @@
     <None Update="CustomText.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

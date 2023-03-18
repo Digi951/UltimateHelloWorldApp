@@ -1,15 +1,21 @@
 using HelloWorldLibrary.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace HelloWorldLibrary.BusinessLogic;
 
 public class Messages : IMessages
 {
+    private readonly IConfiguration _configuration;
     private readonly ILogger<Messages> _logger;
+     
 
-    public Messages(ILogger<Messages> logger)
+    public Messages(IConfiguration configuration, ILogger<Messages> logger)
     {
+        _configuration = configuration;
         _logger = logger;
     }
 
@@ -21,19 +27,10 @@ public class Messages : IMessages
 
     private String LookUpCustomText(String key, String language)
     {
-        JsonSerializerOptions options = new()
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
         try
         {
-
-            List<CustomText>? messageSets = JsonSerializer
-                .Deserialize<List<CustomText>>
-                (
-                    File.ReadAllText("CustomText.json"), options
-                );
+            var messageSets = _configuration.GetSection("MessageSets").Get<IEnumerable<CustomText>>();
+            
 
             CustomText? messages = messageSets?.Where(x => x.Language == language).First();
 
@@ -42,7 +39,7 @@ public class Messages : IMessages
                 throw new NullReferenceException("The specified langage was not found in the json file.");
             }
 
-            return messages.Translations[key];
+            return messages.Translations[key]; 
         }
         catch (Exception ex)
         {

@@ -1,4 +1,5 @@
 ﻿using HelloWorldLibrary.BusinessLogic;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using FluentAssertions;
@@ -7,12 +8,21 @@ namespace HelloWorldTests.BusinessLogic;
 
 public class MessagesTests
 {
+    private readonly IConfiguration _configuration;
+
+    public MessagesTests()
+    {
+        _configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+    }
+
     [Fact]
     public void Greeting_InEnglish()
     {
         // Arange
         ILogger<Messages> logger = new NullLogger<Messages>();
-        Messages messages = new(logger);
+        Messages messages = new(_configuration, logger);
 
         // Act
         String expected = "Hello World";
@@ -27,7 +37,7 @@ public class MessagesTests
     {
         // Arrange
         ILogger<Messages> logger = new NullLogger<Messages>();
-        Messages messages = new(logger);
+        Messages messages = new(_configuration, logger);
 
         // Act
         String expected = "Hola Mundo";
@@ -42,7 +52,7 @@ public class MessagesTests
     {
         // Arrange
         ILogger<Messages> logger = new NullLogger<Messages>();
-        Messages messages = new(logger);
+        Messages messages = new(_configuration, logger);
 
         // Act
         Action action = () => messages.Greeting("fr");
